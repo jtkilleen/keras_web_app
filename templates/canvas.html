@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<meta charset="utf-8" />
+<script src="static/canvas2image.js"></script>
+<style>
+    .doc {
+        width: 604px;
+        margin: 0 auto;
+    }
+    canvas {
+        display: block;
+        border: 2px solid #888;
+    }
+</style>
+<body>
+<div class="doc">
+    <canvas width="280" height="280" id="cvs"></canvas>
+    <div>
+        <p>
+            <button id="save">save</button> or <button id="convert">convert to</button> as:
+            <select id="sel">
+                <option value="png">png</option>
+                <option value="jpeg">jpeg</option>
+                <option value="bmp">bmp</option>
+            </select>
+            <button id="clear">Clear Canvas</button>
+        </p>
+
+    </div>
+    <div id="imgs">
+
+    </div>
+</div>
+<script>
+    var canvas, ctx, bMouseIsDown = false, iLastX, iLastY,
+        $save, $imgs, $clear,
+        $convert, $imgW, $imgH,
+        $sel;
+    function init () {
+        canvas = document.getElementById('cvs');
+        ctx = canvas.getContext('2d');
+        $save = document.getElementById('save');
+        $sel = document.getElementById('sel');
+        $imgs = document.getElementById('imgs');
+        $imgW = document.getElementById('imgW');
+        $imgH = document.getElementById('imgH');
+        $clear = document.getElementById('clear');
+        bind();
+        // draw();
+    }
+    function bind () {
+        canvas.onmousedown = function(e) {
+            bMouseIsDown = true;
+            iLastX = e.clientX - canvas.offsetLeft + (window.pageXOffset||document.body.scrollLeft||document.documentElement.scrollLeft);
+            iLastY = e.clientY - canvas.offsetTop + (window.pageYOffset||document.body.scrollTop||document.documentElement.scrollTop);
+        }
+        canvas.onmouseup = function() {
+            bMouseIsDown = false;
+            iLastX = -1;
+            iLastY = -1;
+        }
+        canvas.onmousemove = function(e) {
+            if (bMouseIsDown) {
+                var iX = e.clientX - canvas.offsetLeft + (window.pageXOffset||document.body.scrollLeft||document.documentElement.scrollLeft);
+                var iY = e.clientY - canvas.offsetTop + (window.pageYOffset||document.body.scrollTop||document.documentElement.scrollTop);
+                ctx.lineWidth=10;
+                ctx.lineJoin='round';
+                ctx.beginPath()
+                ctx.moveTo(iLastX, iLastY);
+                ctx.lineTo(iX, iY);
+                ctx.stroke();
+                iLastX = iX;
+                iLastY = iY;
+            }
+        };
+
+        $save.onclick = function (e) {
+            var type = $sel.value,
+                w = 28,
+                h = 28;
+            Canvas2Image.saveAsImage(canvas, w, h, type);
+        }
+        $clear.onclick = function (e) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+    }
+    // function draw () {
+    //
+    // }
+
+
+    onload = init;
+</script>
+</body>
+</html>
