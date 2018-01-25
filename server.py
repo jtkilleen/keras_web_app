@@ -17,12 +17,6 @@ def decode():
     with open("test.png", "wb") as f:
         f.write(decodestring(str.encode(request.form['send'][31:])))
 
-    img = cv2.imread('test.png', 0)
-    img = img.reshape(img.shape[0], 28).astype('float32')
-    img = img / 255
-
-    model = load_model('models/mnist_model.h5')
-
     img = plt.imread('../writeup/test.png')
     lis = []
     count = 0
@@ -32,11 +26,10 @@ def decode():
             count += 1
 
     img = numpy.array(lis).astype('float32')
-    themodel = load_model('../writeup/models/mnist_model.h5')
-    themodel.predict(numpy.array([img]))
-
-
-    return "Decoded"
+    themodel = load_model('./models/mnist_model.h5')
+    prediction = themodel.predict(numpy.array([img]))
+    guess = numpy.where(prediction[0] == max(prediction[0]))[0][0]
+    return str(guess)
 
 
 if __name__ == '__main__':
