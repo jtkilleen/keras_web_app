@@ -44,14 +44,14 @@ var Canvas2Image = function () {
 	}
 
 	function saveFile (strData) {
-		// document.location.href = strData;
     console.log(strData);
     $.ajax({
       type: "POST",
       url: "/decode",
       data: {'send': strData},
       success: function (data) {
-        console.log(data)
+        console.log(data);
+        $("#prediction").text("Prediction: " + data)
       }
     });
 	}
